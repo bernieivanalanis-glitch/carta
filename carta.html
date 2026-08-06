@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un GTA o q</title>
+
+<style>
+    body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:linear-gradient(135deg,#667eea,#764ba2);
+        font-family:Arial, sans-serif;
+        overflow:hidden;
+    }
+
+    #abrirBtn{
+        padding:18px 35px;
+        font-size:22px;
+        border:none;
+        border-radius:15px;
+        cursor:pointer;
+        background:white;
+        font-weight:bold;
+        box-shadow:0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .carta{
+        display:none;
+        width:90%;
+        max-width:420px;
+        background:white;
+        border-radius:20px;
+        padding:30px;
+        text-align:center;
+        box-shadow:0 10px 30px rgba(0,0,0,0.3);
+        position:relative;
+    }
+
+    h1{
+        color:#333;
+    }
+
+    p{
+        font-size:22px;
+        color:#555;
+        margin:25px 0 40px;
+    }
+
+    .botones{
+        position:relative;
+        height:120px;
+    }
+
+    button{
+        padding:12px 24px;
+        font-size:18px;
+        border:none;
+        border-radius:12px;
+        cursor:pointer;
+        font-weight:bold;
+        position:absolute;
+    }
+
+    #si{
+        background:#4CAF50;
+        color:white;
+        left:25%;
+        top:35px;
+    }
+
+    #no{
+        background:#ff5252;
+        color:white;
+        left:55%;
+        top:35px;
+    }
+
+    .confeti{
+        position:fixed;
+        width:10px;
+        height:10px;
+        top:-10px;
+        animation:caer 3s linear forwards;
+    }
+
+    @keyframes caer{
+        to{
+            transform:translateY(110vh) rotate(720deg);
+            opacity:0;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<button id="abrirBtn">📩 Abrir carta</button>
+
+<div class="carta" id="carta">
+    <h1>😎 Ey bro</h1>
+    <p>Un GTA o q 👀</p>
+
+    <div class="botones">
+        <button id="si">Sí 😎</button>
+        <button id="no">No 🙄</button>
+    </div>
+</div>
+
+<script>
+const abrirBtn = document.getElementById("abrirBtn");
+const carta = document.getElementById("carta");
+const btnNo = document.getElementById("no");
+const btnSi = document.getElementById("si");
+
+abrirBtn.onclick = () => {
+    abrirBtn.style.display = "none";
+    carta.style.display = "block";
+};
+
+// El botón NO siempre se mueve
+btnNo.addEventListener("mouseenter", () => {
+    const maxX = 250;
+    const maxY = 60;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    btnNo.style.left = x + "px";
+    btnNo.style.top = y + "px";
+});
+
+// Confeti al dar SÍ
+btnSi.onclick = () => {
+    for(let i=0; i<180; i++){
+        const c = document.createElement("div");
+        c.className = "confeti";
+        c.style.left = Math.random()*100 + "vw";
+        c.style.background = `hsl(${Math.random()*360},100%,50%)`;
+        c.style.animationDuration = (Math.random()*2+2) + "s";
+        document.body.appendChild(c);
+
+        setTimeout(() => c.remove(), 4000);
+    }
+
+    btnSi.innerHTML = "🎮 Vamoooos 😎";
+};
+</script>
+
+</body>
+</html>
