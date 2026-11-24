@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Cumpleaños</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000000;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Pantalla 1: Portada tipo hoja */
+    #portada-hoja {
+      width: min(380px, 86vw);
+      min-height: 460px;
+      background: #fff9fb;
+      color: #2b1224;
+      border-radius: 12px;
+      border: 2px solid #ff85b3;
+      box-shadow: 0 20px 50px rgba(255, 102, 153, 0.25);
+      padding: 48px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 4;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    #portada-hoja::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px dashed rgba(201, 24, 74, 0.35);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    #portada-hoja.oculto {
+      opacity: 0;
+      transform: scale(0.94);
+      pointer-events: none;
+    }
+
+    .portada-contenido {
+      margin-top: 60px;
+    }
+
+    .portada-icono {
+      font-size: 46px;
+      margin-bottom: 18px;
+    }
+
+    #portada-hoja h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #c9184a;
+      line-height: 1.25;
+    }
+
+    .btn-abrir-portada {
+      background: #ff4d79;
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 42px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 77, 121, 0.4);
+      transition: transform 0.2s ease, background 0.2s ease;
+      margin-bottom: 16px;
+      z-index: 1;
+    }
+
+    .btn-abrir-portada:hover {
+      background: #e63964;
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .btn-abrir-portada:active {
+      transform: scale(0.98);
+    }
+
+    /* Corazones laterales */
+    .corazon {
+      position: fixed;
+      bottom: -30px;
+      color: #ff4d79;
+      pointer-events: none;
+      z-index: 1;
+      animation: subir 4s linear forwards;
+      filter: drop-shadow(0 0 6px rgba(255, 77, 121, 0.45));
+    }
+
+    @keyframes subir {
+      from {
+        transform: translateY(0) scale(0.9);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-108vh) scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    /* Escena del sobre */
+    #escena-sobre {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      z-index: 3;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    #escena-sobre.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #escena-sobre.oculto {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+    }
+
+    .sobre-wrapper {
+      position: relative;
+      width: 320px;
+      height: 210px;
+      cursor: pointer;
+      perspective: 900px;
+      margin-top: 70px;
+    }
+
+    /* Cuerpo trasero del sobre */
+    .sobre-fondo {
+      position: absolute;
+      inset: 0;
+      background: #1a0d26;
+      border: 2px solid #ff6699;
+      border-radius: 10px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+      z-index: 1;
+    }
+
+    /* Hoja que sale de adentro del sobre */
+    .hoja-previa {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 12px;
+      height: 175px;
+      background: #fff7fa;
+      color: #3a1830;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      z-index: 2;
+      transform: translateY(0);
+      transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+    }
+
+    .hoja-previa h3 {
+      margin: 4px 0 8px;
+      font-size: 15px;
+      color: #c9184a;
+    }
+
+    .hoja-previa p {
+      margin: 0;
+      font-size: 12px;
+      color: #5c2a48;
+      line-height: 1.4;
+    }
+
+    /* Pliegues frontales del sobre */
+    .sobre-frente {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sobre-frente::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #2b143d 50%, transparent 50%),
+                  linear-gradient(225deg, #241034 50%, transparent 50%);
+      background-size: 100% 100%;
+      opacity: 0.96;
+    }
+
+    .sobre-frente::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 118px;
+      background: #33184a;
+      clip-path: polygon(0 100%, 50% 12%, 100% 100%);
+      border-top: 1px solid rgba(255, 133, 179, 0.35);
+    }
+
+    /* Solapa superior triangular */
+    .solapa {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 118px;
+      background: #3f1e5c;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.55s ease;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Sello de corazon en el centro */
+    .sello {
+      position: absolute;
+      top: 86px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ff4d79;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      z-index: 5;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    /* Estado abierto del sobre */
+    .sobre-wrapper.abierto .solapa {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .sobre-wrapper.abierto .sello {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.6);
+    }
+
+    .sobre-wrapper.abierto .hoja-previa {
+      transform: translateY(-105px);
+    }
+
+    .texto-ayuda {
+      color: #ffd1e3;
+      font-size: 15px;
+      margin: 0;
+    }
+
+    /* Carta completa desplegada */
+    #carta {
+      display: none;
+      max-width: 560px;
+      width: 56vw;
+      min-width: 280px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: #12091a;
+      border: 2px solid #ff6699;
+      border-radius: 14px;
+      padding: 28px;
+      line-height: 1.6;
+      z-index: 4;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      animation: desplegarCarta 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes desplegarCarta {
+      from {
+        opacity: 0;
+        transform: translateY(35px) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    #carta h2 {
+      margin-top: 0;
+      text-align: center;
+      color: #ff7aa8;
+    }
+
+    .final {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #ff8fb5;
+      margin-top: 20px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Paso 1: Hoja inicial -->
+  <div id="portada-hoja">
+    <div class="portada-contenido">
+      <div class="portada-icono">🎂</div>
+      <h1>Feliz cumple amor</h1>
+    </div>
+    <button class="btn-abrir-portada" type="button" onclick="irAlSobre()">Abrir</button>
+  </div>
+
+  <!-- Paso 2: Sobre -->
+  <div id="escena-sobre">
+    <div class="sobre-wrapper" id="sobreWrapper" onclick="abrir()">
+      <div class="sobre-fondo"></div>
+
+      <div class="hoja-previa">
+        <h3>Feliz cumpleaños, mi vida</h3>
+        <p>Para la mujer que me ha hecho sentir cosas de verdad...</p>
+      </div>
+
+      <div class="sobre-frente"></div>
+      <div class="solapa"></div>
+      <div class="sello">💌</div>
+    </div>
+
+    <p class="texto-ayuda" id="textoAyuda">Toca o haz clic en el sobre para abrir</p>
+  </div>
+
+  <!-- Paso 3: Carta abierta -->
+  <div id="carta">
+    <h2>Feliz cumpleaños, mi vida hermosa</h2>
+    <p>
+      Feliz cumpleaños mi vida hermosa, espero que te la pases super bien, perdón por no poder compartir este día contigo pero sabes que cualquier cosa, sea buena o mala, estare ahi para y por ti
+    </p>
+    <p>
+      Me alegra mucho haberte conocido la única mujer que me ha hecho sentir cosas de verdad, saber lo que es amar y saber lo que es tener miedo a perder a alguien te agradezco por todos los momentos que pasamos, sean buenos o malos palabras faltan para poder describir todo lo que siento por ti no tienes idea de cual enamorado estoy de ti
+    </p>
+    <p>
+      <strong>PSDT:</strong> no cambies como eres se que suelo ser un imbecil la mayor parte del tiempo y por eso agradezco también de aguantarme dia a dia todo lo que hago/digo como tu ninguna
+    </p>
+    <p class="final">Te amo mi vida 💝</p>
+  </div>
+
+  <script>
+    let timer = null;
+    let abriendo = false;
+
+    function irAlSobre() {
+      const portada = document.getElementById("portada-hoja");
+      const escenaSobre = document.getElementById("escena-sobre");
+
+      portada.classList.add("oculto");
+
+      setTimeout(() => {
+        portada.style.display = "none";
+        escenaSobre.style.display = "flex";
+        requestAnimationFrame(() => {
+          escenaSobre.classList.add("visible");
+        });
+      }, 420);
+    }
+
+    function abrir() {
+      if (abriendo) return;
+      abriendo = true;
+
+      const sobreWrapper = document.getElementById("sobreWrapper");
+      const escenaSobre = document.getElementById("escena-sobre");
+      const textoAyuda = document.getElementById("textoAyuda");
+
+      textoAyuda.textContent = "Abriendo...";
+      sobreWrapper.classList.add("abierto");
+
+      setTimeout(() => {
+        escenaSobre.classList.remove("visible");
+        escenaSobre.classList.add("oculto");
+      }, 1350);
+
+      setTimeout(() => {
+        escenaSobre.style.display = "none";
+        document.getElementById("carta").style.display = "block";
+
+        if (!timer) {
+          timer = setInterval(() => {
+            crearCorazon(true);
+            crearCorazon(false);
+          }, 350);
+        }
+      }, 1750);
+    }
+
+    function crearCorazon(izquierda) {
+      const c = document.createElement("div");
+      c.className = "corazon";
+      c.textContent = "♥";
+
+      const maxPorcentaje = 18;
+      const randomX = Math.random() * maxPorcentaje;
+      c.style.left = izquierda ? `${randomX}vw` : `${100 - maxPorcentaje + randomX}vw`;
+      c.style.fontSize = `${16 + Math.random() * 14}px`;
+
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+  </script>
+</body>
+</html>
